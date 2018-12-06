@@ -16,3 +16,21 @@ export const GET_NODES_QUERY = gql`
     }
   }
 `;
+
+export const CREATE_NODE_MUTATION = gql`
+  mutation createNodeMutation(
+    $title: String!
+    $link: String!
+    $description: String
+    $requiredTime: Int
+  ) {
+    createNode(
+      title: $title
+      link: $link
+      description: $description
+      requiredTime: $requiredTime
+    ) {
+      id
+    }
+  }
+`;
