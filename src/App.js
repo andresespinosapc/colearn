@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Container, Menu, Input } from 'semantic-ui-react';
-import { Route, Redirect, withRouter } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import CreateLinkNode from './routes/CreateLinkNode';
 import NodesList from './routes/LinkNodesList';
 
 class App extends Component {
   state = {
-    redirectTo: 'home',
+    redirectTo: null,
   };
 
   render() {
-    const { redirectTo } = this.state;
+    let { redirectTo } = this.state;
     const { pathname } = this.props.location;
+
+    if (redirectTo === pathname) redirectTo = null;
 
     return (
       <React.Fragment>
@@ -20,11 +22,11 @@ class App extends Component {
           <Menu.Item
             name='home'
             active={pathname === '/'}
-            onClick={() => this.setState({ redirectTo: 'home' })} />
+            onClick={() => this.setState({ redirectTo: '/' })} />
           <Menu.Item
             name='Crear nodo'
             active={pathname === '/nodes/create'}
-            onClick={() => this.setState({ redirectTo: 'CreateLinkNode' })}
+            onClick={() => this.setState({ redirectTo: '/nodes/create' })}
           />
           {/* <Menu.Item
               name='friends'
@@ -44,10 +46,11 @@ class App extends Component {
         </Menu>
 
         <Container>
-          {redirectTo === 'CreateLinkNode' && <Redirect push to='/nodes/create' />}
-          {redirectTo === 'home' && <Redirect push to='/' />}
-          <Route exact path="/" component={NodesList} />
-          <Route path="/nodes/create" component={CreateLinkNode} />
+          {redirectTo !== null && <Redirect push to={redirectTo} />}
+          <Switch>
+            <Route exact path="/" component={NodesList} />
+            <Route path="/nodes/create" component={CreateLinkNode} />
+          </Switch>
         </Container>
       </React.Fragment>
     );

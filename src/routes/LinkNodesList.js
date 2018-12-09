@@ -18,7 +18,7 @@ class NodesList extends React.Component {
             return (
               <Card.Group>
                 {nodes.map(node => (
-                  <Card key={node.id}>
+                  <Card key={node.id} href={node.link} target="_blank">
                     <Card.Content>
                       <Card.Header>{node.title}</Card.Header>
                       <div style={{ marginTop: 5, marginBottom: 5 }}>
@@ -30,7 +30,7 @@ class NodesList extends React.Component {
                       </div>
                       <div style={{ marginTop: 5, marginBottom: 5 }}>
                         {node.tags.map(tag => (
-                          <Label size="tiny" className="extraMargin">tag.title</Label>
+                          <Label key={tag.id} size="tiny" className="extraMargin">{tag.title}</Label>
                         ))}
                       </div>
                       <Card.Description>
