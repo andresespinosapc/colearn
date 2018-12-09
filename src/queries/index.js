@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 
 
-export const GET_NODES_QUERY = gql`
+export const GET_LINKNODES_QUERY = gql`
   {
-    allNodes {
+    allLinkNodes {
       id
       title
       description
@@ -17,14 +17,14 @@ export const GET_NODES_QUERY = gql`
   }
 `;
 
-export const CREATE_NODE_MUTATION = gql`
-  mutation createNodeMutation(
+export const CREATE_LINKNODE_MUTATION = gql`
+  mutation createLinkNodeMutation(
     $title: String!
     $link: String!
     $description: String
     $requiredTime: Int
   ) {
-    createNode(
+    createLinkNode(
       title: $title
       link: $link
       description: $description

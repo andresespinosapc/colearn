@@ -1,24 +1,24 @@
 import React from 'react';
-import { Card, Button, Label, Container, Rating } from 'semantic-ui-react';
+import { Card, Button, Label, Container, Rating, Loader } from 'semantic-ui-react';
 import { Query } from 'react-apollo';
-import { GET_NODES_QUERY } from '../queries';
+import { GET_LINKNODES_QUERY } from '../queries';
 
 
 class NodesList extends React.Component {
   render() {
     return (
       <Container>
-        <Query query={GET_NODES_QUERY}>
+        <Query query={GET_LINKNODES_QUERY}>
           {({ loading, error, data }) => {
-            if (loading) return <p>loading</p>;
+            if (loading) return <Loader active inline='centered' />;
             else if (error) return <p>{error}</p>;
 
-            const nodes = data.allNodes;
+            const nodes = data.allLinkNodes;
 
             return (
               <Card.Group>
                 {nodes.map(node => (
-                  <Card>
+                  <Card key={node.id}>
                     <Card.Content>
                       <Card.Header>{node.title}</Card.Header>
                       <div style={{ marginTop: 5, marginBottom: 5 }}>
