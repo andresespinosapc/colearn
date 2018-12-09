@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Container, Menu, Input } from 'semantic-ui-react';
+import { Container, Menu, Input, Icon } from 'semantic-ui-react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import CreateLinkNode from './routes/CreateLinkNode';
 import NodesList from './routes/LinkNodesList';
@@ -19,6 +19,11 @@ class App extends Component {
     return (
       <React.Fragment>
         <Menu stackable inverted color="violet">
+          <Menu.Item>
+            <div class="ui mini image">
+              <img src="/logo_white.png" />
+            </div>
+          </Menu.Item>
           <Menu.Item
             name='home'
             active={pathname === '/'}
