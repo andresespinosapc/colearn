@@ -10,10 +10,19 @@ import algoliasearch from 'algoliasearch';
 class NodesList extends React.Component {
   static propTypes = {
     tagsFilter: PropTypes.arrayOf(PropTypes.string),
+    LinkNodeComponent: PropTypes.func,
+    onLinkNodeSelect: PropTypes.func,
+    selectedLinkNodes: PropTypes.arrayOf(PropTypes.objectOf({
+      id: PropTypes.string,
+      title: PropTypes.string,
+    })),
   }
 
   static defaultProps = {
     tagsFilter: [],
+    LinkNodeComponent: LinkNodeCard,
+    onLinkNodeSelect: () => {},
+    selectedLinkNodes: [],
   }
 
   state = {
@@ -23,11 +32,13 @@ class NodesList extends React.Component {
   };
 
   componentDidUpdate() {
-    const { lastQuery } = this.state;
+    const { lastQuery, queryStatus } = this.state;
     const { query } = this.props.match.params;
 
     if (query && query !== lastQuery) {
       this.loadQuery(query);
+    } else if (!query && queryStatus !== null) {
+      this.setState({ queryStatus: null });
     }
   }
 
@@ -43,17 +54,33 @@ class NodesList extends React.Component {
     });
   }
 
+  handleClickNode = (nodeId, nodeTitle) => {
+    const { onLinkNodeSelect, selectedLinkNodes } = this.props;
+
+    const clickedIndex = selectedLinkNodes.findIndex(node => node.id === nodeId);
+    let newSelectedLinkNodes;
+    if (clickedIndex === -1) {
+      newSelectedLinkNodes = [...selectedLinkNodes, { id: nodeId, title: nodeTitle }];
+    } else {
+      newSelectedLinkNodes = [...selectedLinkNodes];
+      newSelectedLinkNodes.splice(clickedIndex, 1);
+    }
+
+    onLinkNodeSelect(newSelectedLinkNodes);
+    // this.setState({ selectedLinkNodes: newSelectedLinkNodes });
+  }
+
   render() {
     const { queryStatus, queryData } = this.state;
-    const { tagsFilter } = this.props;
+    const { tagsFilter, LinkNodeComponent, selectedLinkNodes } = this.props;
 
     return (
       <Container>
         {(queryStatus === 'loading') && <Loader active inline='centered' />}
         {(queryStatus === 'error') && <p>Error</p>}
         {(queryStatus === 'ready') && (
-          <Card.Group>
-            {queryData.map(node => <LinkNodeCard key={node.id} node={node} />)}
+          <Card.Group centered>
+            {queryData.map(node => <LinkNodeComponent key={node.id} node={node} />)}
           </Card.Group>
         )}
         {(queryStatus === null) && (
@@ -67,8 +94,8 @@ class NodesList extends React.Component {
               else nodes = data.allLinkNodes;
 
               return (
-                <Card.Group>
-                  {nodes.map(node => <LinkNodeCard key={node.id} node={node} />)}
+                <Card.Group centered>
+                  {nodes.map(node => <LinkNodeComponent key={node.id} node={node} selected={selectedLinkNodes.findIndex(x => x.id === node.id) !== -1} onClick={() => this.handleClickNode(node.id, node.title)} />)}
                 </Card.Group>
               )
             }}

@@ -1,8 +1,10 @@
 import React from 'react';
-import { Input, Dropdown, Form, Button, Message } from 'semantic-ui-react';
+import { Grid, Input, Dropdown, Form, Button, Message, Modal, Divider, Label, Icon } from 'semantic-ui-react';
 import { Mutation, Query } from 'react-apollo';
 import { CREATE_LINKNODE_MUTATION, GET_TAGS_QUERY, GET_LINKNODES_QUERY } from '../queries';
 import { Redirect } from 'react-router-dom';
+import LinkNodesList from '../routes/LinkNodesList';
+import SelectableLinkNodeCard from '../components/SelectableLinkNodeCard';
 
 
 class CreateLinkNode extends React.Component {
@@ -14,8 +16,11 @@ class CreateLinkNode extends React.Component {
     link: '',
     description: '',
     requiredTime: '',
+    requirements: [],
     addedTags: [],
     currentTags: [],
+    searchText: '',
+    modalOpen: false,
   };
 
   handleError = (error) => {
@@ -30,6 +35,9 @@ class CreateLinkNode extends React.Component {
 
   handleChangeTag = (e, { value }) => this.setState({ currentTags: value })
 
+  handleLinkNodeSelect = (selectedNodes) => {
+    this.setState({ requirements: selectedNodes });
+  }
 
   render() {
     const {
@@ -40,8 +48,11 @@ class CreateLinkNode extends React.Component {
       link,
       description,
       requiredTime,
+      requirements,
       addedTags,
       currentTags,
+      searchText,
+      modalOpen,
     } = this.state;
 
     if (redirect) return <Redirect push to='/' />
@@ -101,6 +112,45 @@ class CreateLinkNode extends React.Component {
                   />
                 </Form.Field>
                 <Form.Input label='Tiempo requerido' placeholder='Tiempo requerido' value={requiredTime} onChange={event => this.setState({ requiredTime: event.target.value })} />
+                <Form.Field>
+                  <div>
+                    <Button color="red" onClick={() => this.setState({ modalOpen: true })}>Agregar requisitos</Button>
+                    {requirements.map(requirement => (
+                      <Label key={requirement}>{requirement}<Icon name="delete"/></Label>
+                    ))}
+                  </div>
+                  <Modal open={modalOpen}>
+                    <Modal.Header>
+                      Agregar requisitos
+                      <Button
+                        color="red"
+                        className="right floated"
+                        onClick={() => this.setState({ modalOpen: false })}
+                      >
+                        Terminar
+                      </Button>
+                    </Modal.Header>
+                    <Modal.Content>
+                      <Grid divided="vertically">
+                        <Grid.Row centered>
+                          <Input
+                            icon={{ name: 'search', circular: true, link: true, onClick: () => this.handleSearchSubmit(searchText) }}
+                            placeholder="Buscar..."
+                            value={searchText}
+                            onChange={(e, { value }) => this.setState({ searchText: value })}
+                          />
+                        </Grid.Row>
+                        <Grid.Row>
+                          <LinkNodesList
+                            match={{ params: { query: searchText } }}
+                            LinkNodeComponent={SelectableLinkNodeCard}
+                            onLinkNodeSelect={this.handleLinkNodeSelect}
+                          />
+                        </Grid.Row>
+                      </Grid>
+                    </Modal.Content>
+                  </Modal>
+                </Form.Field>
                 <Mutation
                   mutation={CREATE_LINKNODE_MUTATION}
                   variables={{
@@ -124,7 +174,7 @@ class CreateLinkNode extends React.Component {
                   onError={this.handleError}
                 >
                   {postMutation => (
-                    <Button loading={loading} type='submit' onClick={() => {
+                    <Button color="green" loading={loading} type='submit' onClick={() => {
                       let errors = [];
                       if (!title.length) errors.push('Tienes que ponerle un título');
                       if (!link.length) errors.push('Tienes que poner un link');

@@ -12,6 +12,10 @@ class App extends Component {
     searchText: '',
   };
 
+  handleSearchSubmit = (searchText) => {
+    this.setState({ redirectTo: searchText === '' ? '/' : '/search/' + searchText })
+  }
+
   render() {
     let { redirectTo, searchText } = this.state;
     const { pathname } = this.props.location;
@@ -75,9 +79,9 @@ class App extends Component {
               </Query>
             </Menu.Item> */}
             <Menu.Item>
-              <Form onSubmit={() => this.setState({ redirectTo: searchText === '' ? '/' : '/search/' + searchText})}>
+              <Form onSubmit={() => this.handleSearchSubmit(searchText)}>
                 <Form.Input
-                  icon={{ name: 'search', circular: true, link: true }}
+                  icon={{ name: 'search', circular: true, link: true, onClick: () => this.handleSearchSubmit(searchText) }}
                   placeholder="Buscar..."
                   value={searchText}
                   onChange={(e, { value }) => this.setState({ searchText: value })}
