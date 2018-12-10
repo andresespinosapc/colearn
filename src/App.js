@@ -101,6 +101,8 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={NodesList} />
             <Route path="/search/:query" component={NodesList} />
+            <Route path="/requirements/:parentId" component={NodesList} />
+            <Route path="/dependees/:childId" component={NodesList} />
             <Route path="/nodes/create" component={CreateLinkNode} />
           </Switch>
         </Container>

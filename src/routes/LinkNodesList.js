@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Container, Loader } from 'semantic-ui-react';
+import { Segment, Card, Container, Loader } from 'semantic-ui-react';
 import { Query } from 'react-apollo';
 import { GET_LINKNODES_QUERY } from '../queries';
 import LinkNodeCard from '../components/LinkNodeCard';
 import algoliasearch from 'algoliasearch';
+import { Redirect } from 'react-router-dom';
 
 
 class NodesList extends React.Component {
@@ -29,6 +30,7 @@ class NodesList extends React.Component {
     lastQuery: '',
     queryStatus: null,
     queryData: null,
+    redirectTo: null,
   };
 
   componentDidUpdate() {
@@ -69,21 +71,65 @@ class NodesList extends React.Component {
     onLinkNodeSelect(newSelectedLinkNodes);
   }
 
+  renderCardGroup = (nodes) => {
+    const { LinkNodeComponent, selectedLinkNodes } = this.props;
+
+    if (nodes.length === 0) {
+      return (
+        <Segment>
+          Nada que mostrar
+        </Segment>
+      )
+    }
+
+    return (
+      <Card.Group centered>
+        {nodes.map(node => (
+          <LinkNodeComponent
+            key={node.id}
+            node={node}
+            selected={selectedLinkNodes.findIndex(x => x.id === node.id) !== -1}
+            onClick={() => this.handleClickNode(node.id, node.title)}
+            onRequirementsClick={parentId => this.setState({ redirectTo: `/requirements/${parentId}` })}
+            onDependeesClick={childId => this.setState({ redirectTo: `/dependees/${childId}` })}
+          />
+        ))}
+      </Card.Group>
+    );
+  };
+
   render() {
+    let { redirectTo } = this.state;
     const { queryStatus, queryData } = this.state;
-    const { tagsFilter, LinkNodeComponent, selectedLinkNodes } = this.props;
+    const { tagsFilter, LinkNodeComponent } = this.props;
+    const { parentId, childId } = this.props.match.params;
+    const { pathname } = this.props.location;
+
+    if (redirectTo === pathname) redirectTo = null;
+    if (redirectTo !== null) return <Redirect push to={redirectTo} />;
+
+    let filter;
+    if (parentId) {
+      filter = {
+        parents_some: {
+          id: parentId
+        }
+      };
+    } else if (childId) {
+      filter = {
+        children_some: {
+          id: childId
+        }
+      };
+    }
 
     return (
       <Container>
         {(queryStatus === 'loading') && <Loader active inline='centered' />}
         {(queryStatus === 'error') && <p>Error</p>}
-        {(queryStatus === 'ready') && (
-          <Card.Group centered>
-            {queryData.map(node => <LinkNodeComponent key={node.id} node={node} />)}
-          </Card.Group>
-        )}
+        {(queryStatus === 'ready') && this.renderCardGroup(queryData)}
         {(queryStatus === null) && (
-          <Query query={GET_LINKNODES_QUERY}>
+          <Query query={GET_LINKNODES_QUERY} variables={filter ? { filter } : undefined}>
             {({ loading, error, data }) => {
               if (loading) return <Loader active inline='centered' />;
               else if (error) return <p>{error}</p>;
@@ -92,11 +138,7 @@ class NodesList extends React.Component {
               if (tagsFilter.length > 0) nodes = data.allLinkNodes.filter(linkNode => tagsFilter.every(tagFilter => linkNode.tags.findIndex(tag => tagFilter === tag.title) !== -1));
               else nodes = data.allLinkNodes;
 
-              return (
-                <Card.Group centered>
-                  {nodes.map(node => <LinkNodeComponent key={node.id} node={node} selected={selectedLinkNodes.findIndex(x => x.id === node.id) !== -1} onClick={() => this.handleClickNode(node.id, node.title)} />)}
-                </Card.Group>
-              )
+              return this.renderCardGroup(nodes);
             }}
           </Query>
         )}

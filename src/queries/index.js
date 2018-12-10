@@ -2,8 +2,12 @@ import gql from 'graphql-tag';
 
 
 export const GET_LINKNODES_QUERY = gql`
-  {
-    allLinkNodes {
+  query allLinkNodesFilter (
+    $filter: LinkNodeFilter
+  ) {
+    allLinkNodes(
+      filter: $filter
+    ) {
       id
       title
       description
