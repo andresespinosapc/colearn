@@ -26,10 +26,10 @@ const LinkNodeCard = ({ node }) => (
       <div className='ui two buttons'>
         <Button basic color='red'>
           Requisitos
-                        </Button>
+        </Button>
         <Button basic color='green'>
           Requisito de
-                        </Button>
+        </Button>
       </div>
     </Card.Content>
   </Card>

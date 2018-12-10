@@ -34,6 +34,7 @@ export const CREATE_LINKNODE_MUTATION = gql`
     $link: String!
     $description: String
     $requiredTime: Int
+    $childrenIds: [ID!]
     $tagsIds: [ID!]
     $tags: [LinkNodetagsTag!]
   ) {
@@ -42,11 +43,13 @@ export const CREATE_LINKNODE_MUTATION = gql`
       link: $link
       description: $description
       requiredTime: $requiredTime
+      childrenIds: $childrenIds
       tagsIds: $tagsIds
       tags: $tags
     ) {
       id
       title
+      link
       description
       tags {
         id

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Input, Dropdown, Form, Button, Message, Modal, Divider, Label, Icon } from 'semantic-ui-react';
+import { Grid, Input, Dropdown, Form, Button, Message, Modal, Label, Icon } from 'semantic-ui-react';
 import { Mutation, Query } from 'react-apollo';
 import { CREATE_LINKNODE_MUTATION, GET_TAGS_QUERY, GET_LINKNODES_QUERY } from '../queries';
 import { Redirect } from 'react-router-dom';
@@ -37,6 +37,17 @@ class CreateLinkNode extends React.Component {
 
   handleLinkNodeSelect = (selectedNodes) => {
     this.setState({ requirements: selectedNodes });
+  }
+
+  removeRequirement = (requirementId) => {
+    const { requirements } = this.state;
+
+    const newRequirements = [...requirements];
+    const requirementIndex = requirements.findIndex(req => req.id === requirementId);
+    if (requirementIndex !== -1) {
+      newRequirements.splice(requirementIndex, 1);
+      this.setState({ requirements: newRequirements });
+    }
   }
 
   render() {
@@ -116,7 +127,7 @@ class CreateLinkNode extends React.Component {
                   <div>
                     <Button color="red" onClick={() => this.setState({ modalOpen: true })}>Agregar requisitos</Button>
                     {requirements.map(requirement => (
-                      <Label key={requirement}>{requirement}<Icon name="delete"/></Label>
+                      <Label key={requirement.id}>{requirement.title}<Icon name="delete" onClick={() => this.removeRequirement(requirement.id)} /></Label>
                     ))}
                   </div>
                   <Modal open={modalOpen}>
@@ -145,6 +156,7 @@ class CreateLinkNode extends React.Component {
                             match={{ params: { query: searchText } }}
                             LinkNodeComponent={SelectableLinkNodeCard}
                             onLinkNodeSelect={this.handleLinkNodeSelect}
+                            selectedLinkNodes={requirements}
                           />
                         </Grid.Row>
                       </Grid>
@@ -161,7 +173,8 @@ class CreateLinkNode extends React.Component {
                     tagsIds: options
                       .filter(item => addedTags.indexOf(item.text) === -1 && currentTags.indexOf(item.text) === 1)
                       .map(item => item.key),
-                    tags: addedTags.map(tag => ({ title: tag }))
+                    tags: addedTags.map(tag => ({ title: tag })),
+                    childrenIds: requirements.map(requirement => requirement.id),
                   }}
                   update={(store, { data: { createLinkNode }}) => {
                     const data = store.readQuery({ query: GET_LINKNODES_QUERY })

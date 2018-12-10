@@ -12,7 +12,7 @@ class NodesList extends React.Component {
     tagsFilter: PropTypes.arrayOf(PropTypes.string),
     LinkNodeComponent: PropTypes.func,
     onLinkNodeSelect: PropTypes.func,
-    selectedLinkNodes: PropTypes.arrayOf(PropTypes.objectOf({
+    selectedLinkNodes: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string,
       title: PropTypes.string,
     })),
@@ -67,7 +67,6 @@ class NodesList extends React.Component {
     }
 
     onLinkNodeSelect(newSelectedLinkNodes);
-    // this.setState({ selectedLinkNodes: newSelectedLinkNodes });
   }
 
   render() {

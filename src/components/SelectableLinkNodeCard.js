@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Icon, Label, Rating } from 'semantic-ui-react';
+import { Card, Icon, Label } from 'semantic-ui-react';
 import '../App.css';
 
 
