@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "algoliasearch": "^3.31.0",
     "apollo-boost": "^0.1.22",
     "graphql": "^14.0.2",
     "react": "^16.6.3",

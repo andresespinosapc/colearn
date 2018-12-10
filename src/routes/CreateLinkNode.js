@@ -134,7 +134,7 @@ class CreateLinkNode extends React.Component {
                         this.setState({ loading: true });
                         postMutation();
                       }
-                    }}>Submit</Button>
+                    }}>Crear</Button>
                   )}
                 </Mutation>
               </Form>

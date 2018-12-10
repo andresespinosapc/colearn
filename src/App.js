@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Container, Menu, Input, Icon } from 'semantic-ui-react';
+import { Container, Menu, Form } from 'semantic-ui-react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import CreateLinkNode from './routes/CreateLinkNode';
 import NodesList from './routes/LinkNodesList';
 
+
 class App extends Component {
   state = {
     redirectTo: null,
+    searchText: '',
   };
 
   render() {
-    let { redirectTo } = this.state;
+    let { redirectTo, searchText } = this.state;
     const { pathname } = this.props.location;
 
     if (redirectTo === pathname) redirectTo = null;
@@ -20,8 +22,8 @@ class App extends Component {
       <React.Fragment>
         <Menu stackable inverted color="violet">
           <Menu.Item>
-            <div class="ui mini image">
-              <img src="/logo_white.png" />
+            <div className="ui mini image">
+              <img src="/logo_white.png" alt="App logo" />
             </div>
           </Menu.Item>
           <Menu.Item
@@ -29,7 +31,7 @@ class App extends Component {
             active={pathname === '/'}
             onClick={() => this.setState({ redirectTo: '/' })} />
           <Menu.Item
-            name='Crear nodo'
+            name='Crear CoLink'
             active={pathname === '/nodes/create'}
             onClick={() => this.setState({ redirectTo: '/nodes/create' })}
           />
@@ -39,8 +41,48 @@ class App extends Component {
               onClick={this.handleItemClick}
             /> */}
           <Menu.Menu position='right'>
+            {/* <Menu.Item>
+              <Query query={GET_TAGS_QUERY}>
+                {({ queryLoading, error, data }) => {
+                  let placeholder;
+                  let options = [];
+                  if (queryLoading) placeholder = 'Cargando...';
+                  else if (error) placeholder = 'Error';
+                  else placeholder = 'Filtra por etiquetas';
+
+                  if (data.allTags) {
+                    options = data.allTags.map(tag => ({
+                      key: tag.id,
+                      text: tag.title,
+                      value: tag.title,
+                    }));
+                  }
+
+                  return (
+                    <Dropdown
+                      options={options}
+                      placeholder={placeholder}
+                      search
+                      selection
+                      multiple
+                      value={currentSearchTags}
+                      onChange={(e, { value }) => this.setState({ currentSearchTags: value })}
+                      additionLabel='Nueva etiqueta: '
+                      noResultsMessage='No hay resultados'
+                    />
+                  );
+                }}
+              </Query>
+            </Menu.Item> */}
             <Menu.Item>
-              <Input icon='search' placeholder='Search...' />
+              <Form onSubmit={() => this.setState({ redirectTo: searchText === '' ? '/' : '/search/' + searchText})}>
+                <Form.Input
+                  icon={{ name: 'search', circular: true, link: true }}
+                  placeholder="Buscar..."
+                  value={searchText}
+                  onChange={(e, { value }) => this.setState({ searchText: value })}
+                />
+              </Form>
             </Menu.Item>
             <Menu.Item
               name='logout'
@@ -54,6 +96,7 @@ class App extends Component {
           {redirectTo !== null && <Redirect push to={redirectTo} />}
           <Switch>
             <Route exact path="/" component={NodesList} />
+            <Route path="/search/:query" component={NodesList} />
             <Route path="/nodes/create" component={CreateLinkNode} />
           </Switch>
         </Container>
