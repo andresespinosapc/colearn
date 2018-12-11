@@ -39,11 +39,6 @@ class App extends Component {
             active={pathname === '/nodes/create'}
             onClick={() => this.setState({ redirectTo: '/nodes/create' })}
           />
-          {/* <Menu.Item
-              name='friends'
-              active={false}
-              onClick={this.handleItemClick}
-            /> */}
           <Menu.Menu position='right'>
             {/* <Menu.Item>
               <Query query={GET_TAGS_QUERY}>

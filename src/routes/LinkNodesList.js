@@ -101,12 +101,15 @@ class NodesList extends React.Component {
   render() {
     let { redirectTo } = this.state;
     const { queryStatus, queryData } = this.state;
-    const { tagsFilter, LinkNodeComponent } = this.props;
+    const { tagsFilter } = this.props;
     const { parentId, childId } = this.props.match.params;
-    const { pathname } = this.props.location;
 
-    if (redirectTo === pathname) redirectTo = null;
-    if (redirectTo !== null) return <Redirect push to={redirectTo} />;
+    if (this.props.location) {
+      const { pathname } = this.props.location;
+
+      if (redirectTo === pathname) redirectTo = null;
+      if (redirectTo !== null) return <Redirect push to={redirectTo} />;
+    }
 
     let filter;
     if (parentId) {
