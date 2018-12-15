@@ -1,3 +1,38 @@
+# CoLearn
+
+## Objective
+The objective of this website is to cooperatively share efficient ways of learning a subject.
+
+## How it works?
+
+- You can add links to articles, videos, courses or other sources which helped you to learn something new.
+- You can add other links as requirements to the new link. The idea is to have a linear way to learn things.
+- People can rate and comment links, and also suggest chenges to the title, tags and description of the link (like a wiki).
+
+## Why do I need it?
+- You avoid other people's mistakes, which can be wasting time in useless sources.
+- You find content that is adecuate to your needs and level of expertise in a subject.
+
+# Contribute
+
+## Development stack
+- React for the frontend.
+- Firebase for hosting.
+- Graphcool for the backend.
+- Apollo Client to perform queries and mutations from the frontent.
+
+## Backend
+At this time, the API is open to anyone to modify content. As the project develops, I will set the required permissions.
+
+You can make queries and see the schema here: https://api.graph.cool/simple/v1/cjpbp15se2pfn0168y9y18ky6.
+
+## Frontend
+I use [Apollo Client](https://www.apollographql.com/docs/react/) to make queries to the backend. [Here](https://www.howtographql.com/react-apollo/0-introduction/) you can find a very well written tutorial.
+
+I use [Semantic UI React](https://react.semantic-ui.com/) for the design.
+
+# React App README
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
