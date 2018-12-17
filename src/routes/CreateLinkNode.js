@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, Input, Dropdown, Form, Button, Message, Modal, Label, Icon } from 'semantic-ui-react';
 import { Mutation, Query } from 'react-apollo';
 import { CREATE_LINKNODE_MUTATION, GET_TAGS_QUERY, GET_LINKNODES_QUERY } from '../queries';
-import { Redirect } from 'react-router-dom';
 import LinkNodesList from '../routes/LinkNodesList';
 import SelectableLinkNodeCard from '../components/SelectableLinkNodeCard';
 
@@ -10,7 +9,6 @@ import SelectableLinkNodeCard from '../components/SelectableLinkNodeCard';
 class CreateLinkNode extends React.Component {
   state = {
     errorMessages: [],
-    redirect: false,
     loading: false,
     title: '',
     link: '',
@@ -53,7 +51,6 @@ class CreateLinkNode extends React.Component {
   render() {
     const {
       errorMessages,
-      redirect,
       loading,
       title,
       link,
@@ -65,8 +62,7 @@ class CreateLinkNode extends React.Component {
       searchText,
       modalOpen,
     } = this.state;
-
-    if (redirect) return <Redirect push to='/' />
+    const { history } = this.props;
 
     return (
       <React.Fragment>
@@ -183,7 +179,10 @@ class CreateLinkNode extends React.Component {
 
                     store.writeQuery({ query: GET_LINKNODES_QUERY, data })
                   }}
-                  onCompleted={() => this.setState({ loading: false, redirect: true })}
+                  onCompleted={() => {
+                    this.setState({ loading: false });
+                    history.push('/');
+                  }}
                   onError={this.handleError}
                 >
                   {postMutation => (

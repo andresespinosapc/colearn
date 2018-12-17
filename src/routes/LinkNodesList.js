@@ -5,7 +5,6 @@ import { Query } from 'react-apollo';
 import { GET_LINKNODES_QUERY } from '../queries';
 import LinkNodeCard from '../components/LinkNodeCard';
 import algoliasearch from 'algoliasearch';
-import { Redirect } from 'react-router-dom';
 
 
 class NodesList extends React.Component {
@@ -30,7 +29,6 @@ class NodesList extends React.Component {
     lastQuery: '',
     queryStatus: null,
     queryData: null,
-    redirectTo: null,
   };
 
   componentDidUpdate() {
@@ -72,7 +70,7 @@ class NodesList extends React.Component {
   }
 
   renderCardGroup = (nodes) => {
-    const { LinkNodeComponent, selectedLinkNodes } = this.props;
+    const { LinkNodeComponent, selectedLinkNodes, history } = this.props;
 
     if (nodes.length === 0) {
       return (
@@ -90,8 +88,8 @@ class NodesList extends React.Component {
             node={node}
             selected={selectedLinkNodes.findIndex(x => x.id === node.id) !== -1}
             onClick={() => this.handleClickNode(node.id, node.title)}
-            onRequirementsClick={parentId => this.setState({ redirectTo: `/requirements/${parentId}` })}
-            onDependeesClick={childId => this.setState({ redirectTo: `/dependees/${childId}` })}
+            onRequirementsClick={parentId => history.push(`/requirements/${parentId}`)}
+            onDependeesClick={childId => history.push(`/dependees/${childId}`)}
           />
         ))}
       </Card.Group>
@@ -99,17 +97,9 @@ class NodesList extends React.Component {
   };
 
   render() {
-    let { redirectTo } = this.state;
     const { queryStatus, queryData } = this.state;
     const { tagsFilter } = this.props;
     const { parentId, childId } = this.props.match.params;
-
-    if (this.props.location) {
-      const { pathname } = this.props.location;
-
-      if (redirectTo === pathname) redirectTo = null;
-      if (redirectTo !== null) return <Redirect push to={redirectTo} />;
-    }
 
     let filter;
     if (parentId) {

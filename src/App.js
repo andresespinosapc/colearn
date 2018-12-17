@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Container, Menu, Form } from 'semantic-ui-react';
-import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import CreateLinkNode from './routes/CreateLinkNode';
 import NodesList from './routes/LinkNodesList';
 
 
 class App extends Component {
   state = {
-    redirectTo: null,
     searchText: '',
   };
 
   handleSearchSubmit = (searchText) => {
-    this.setState({ redirectTo: searchText === '' ? '/' : '/search/' + searchText })
+    const { history } = this.props;
+
+    history.push(searchText === '' ? '/' : '/search/' + searchText);
   }
 
   render() {
-    let { redirectTo, searchText } = this.state;
+    let { searchText } = this.state;
+    const { history } = this.props;
     const { pathname } = this.props.location;
-
-    if (redirectTo === pathname) redirectTo = null;
 
     return (
       <React.Fragment>
@@ -33,11 +33,11 @@ class App extends Component {
           <Menu.Item
             name='home'
             active={pathname === '/'}
-            onClick={() => this.setState({ redirectTo: '/' })} />
+            onClick={() => history.push('/')} />
           <Menu.Item
             name='Crear CoLink'
             active={pathname === '/nodes/create'}
-            onClick={() => this.setState({ redirectTo: '/nodes/create' })}
+            onClick={() => history.push('/nodes/create')}
           />
           <Menu.Menu position='right'>
             {/* <Menu.Item>
@@ -92,7 +92,6 @@ class App extends Component {
         </Menu>
 
         <Container>
-          {redirectTo !== null && <Redirect push to={redirectTo} />}
           <Switch>
             <Route exact path="/" component={NodesList} />
             <Route path="/search/:query" component={NodesList} />
