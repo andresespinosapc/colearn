@@ -10,7 +10,7 @@ const LinkNodeCard = ({ node, onRequirementsClick, onDependeesClick }) => (
       <div style={{ marginTop: 5, marginBottom: 5 }}>
         <Rating
           icon='star'
-          defaultRating={node.ratings.length && node.ratings.reduce((prev, cur) => prev + cur.score) / node.ratings.length}
+          defaultRating={node.ratings.length && node.ratings.reduce((prev, cur) => prev + cur.score).score / node.ratings.length}
           maxRating={5}
         />
       </div>
