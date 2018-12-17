@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Segment, Card, Container, Loader } from 'semantic-ui-react';
 import { Query } from 'react-apollo';
-import { GET_LINKNODES_QUERY } from '../queries';
+import { GET_LINKNODES_QUERY, GET_LINKNODES_VAR_QUERY } from '../queries';
 import LinkNodeCard from '../components/LinkNodeCard';
 import algoliasearch from 'algoliasearch';
 
 
 class NodesList extends React.Component {
   static propTypes = {
-    tagsFilter: PropTypes.arrayOf(PropTypes.string),
     LinkNodeComponent: PropTypes.func,
     onLinkNodeSelect: PropTypes.func,
     selectedLinkNodes: PropTypes.arrayOf(PropTypes.shape({
@@ -19,7 +18,6 @@ class NodesList extends React.Component {
   }
 
   static defaultProps = {
-    tagsFilter: [],
     LinkNodeComponent: LinkNodeCard,
     onLinkNodeSelect: () => {},
     selectedLinkNodes: [],
@@ -69,6 +67,13 @@ class NodesList extends React.Component {
     onLinkNodeSelect(newSelectedLinkNodes);
   }
 
+  linkNodesQueryCallback = ({ loading, error, data }) => {
+    if (loading) return <Loader active inline='centered' />;
+    else if (error) return <p>{error}</p>;
+
+    return this.renderCardGroup(data.allLinkNodes);
+  }
+
   renderCardGroup = (nodes) => {
     const { LinkNodeComponent, selectedLinkNodes, history } = this.props;
 
@@ -98,7 +103,6 @@ class NodesList extends React.Component {
 
   render() {
     const { queryStatus, queryData } = this.state;
-    const { tagsFilter } = this.props;
     const { parentId, childId } = this.props.match.params;
 
     let filter;
@@ -122,18 +126,15 @@ class NodesList extends React.Component {
         {(queryStatus === 'error') && <p>Error</p>}
         {(queryStatus === 'ready') && this.renderCardGroup(queryData)}
         {(queryStatus === null) && (
-          <Query query={GET_LINKNODES_QUERY} variables={filter ? { filter } : undefined}>
-            {({ loading, error, data }) => {
-              if (loading) return <Loader active inline='centered' />;
-              else if (error) return <p>{error}</p>;
-
-              let nodes;
-              if (tagsFilter.length > 0) nodes = data.allLinkNodes.filter(linkNode => tagsFilter.every(tagFilter => linkNode.tags.findIndex(tag => tagFilter === tag.title) !== -1));
-              else nodes = data.allLinkNodes;
-
-              return this.renderCardGroup(nodes);
-            }}
-          </Query>
+          filter ? (
+            <Query query={GET_LINKNODES_VAR_QUERY} variables={{ filter }}>
+              {this.linkNodesQueryCallback}
+            </Query>
+          ) : (
+            <Query query={GET_LINKNODES_QUERY}>
+              {this.linkNodesQueryCallback}
+            </Query>
+          )
         )}
       </Container>
     );

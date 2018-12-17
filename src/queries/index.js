@@ -1,13 +1,31 @@
 import gql from 'graphql-tag';
 
 
-export const GET_LINKNODES_QUERY = gql`
+export const GET_LINKNODES_VAR_QUERY = gql`
   query allLinkNodesFilter (
     $filter: LinkNodeFilter
   ) {
     allLinkNodes(
       filter: $filter
     ) {
+      id
+      title
+      description
+      link
+      tags {
+        id
+        title
+      }
+      ratings {
+        score
+      }
+    }
+  }
+`;
+
+export const GET_LINKNODES_QUERY = gql`
+  {
+    allLinkNodes {
       id
       title
       description
