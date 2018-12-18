@@ -4,6 +4,8 @@ import { Container, Menu, Form } from 'semantic-ui-react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import CreateLinkNode from './routes/CreateLinkNode';
 import NodesList from './routes/LinkNodesList';
+import Login from './routes/Login';
+import { AUTH_TOKEN } from './constants';
 
 
 class App extends Component {
@@ -18,6 +20,8 @@ class App extends Component {
   }
 
   render() {
+    const authToken = localStorage.getItem(AUTH_TOKEN);
+
     let { searchText } = this.state;
     const { history } = this.props;
     const { pathname } = this.props.location;
@@ -83,17 +87,29 @@ class App extends Component {
                 />
               </Form>
             </Menu.Item>
-            <Menu.Item
-              name='logout'
-              active={false}
-              onClick={this.handleItemClick}
-            />
+            {authToken ? (
+              <Menu.Item
+                name='logout'
+                active={false}
+                onClick={() => {
+                  localStorage.removeItem(AUTH_TOKEN);
+                  history.push('/');
+                }}
+              />
+            ) : (
+              <Menu.Item
+                name='login'
+                active={pathname === '/login'}
+                onClick={() => history.push('/login')}
+              />
+            )}
           </Menu.Menu>
         </Menu>
 
         <Container>
           <Switch>
             <Route exact path="/" component={NodesList} />
+            <Route exact path="/login" component={Login} />
             <Route path="/search/:query" component={NodesList} />
             <Route path="/requirements/:parentId" component={NodesList} />
             <Route path="/dependees/:childId" component={NodesList} />

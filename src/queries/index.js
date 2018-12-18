@@ -1,6 +1,40 @@
 import gql from 'graphql-tag';
 
 
+export const LOGIN_MUTATION = gql`
+  mutation loginMutation(
+    $email: String!
+    $password: String!
+  ) {
+    signinUser(
+      email: {
+        email: $email
+        password: $password
+      }
+    ) {
+      token
+    }
+  }
+`;
+
+export const SIGNUP_MUTATION = gql`
+  mutation signupMutation(
+    $email: String!
+    $password: String!
+  ) {
+    createUser(
+      authProvider: {
+        email: {
+          email: $email
+          password: $password
+        }
+      }
+    ) {
+      id
+    }
+  }
+`;
+
 export const GET_LINKNODES_VAR_QUERY = gql`
   query allLinkNodesFilter (
     $filter: LinkNodeFilter
