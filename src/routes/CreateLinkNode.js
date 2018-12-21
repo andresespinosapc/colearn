@@ -75,7 +75,7 @@ class CreateLinkNode extends React.Component {
           />
         )}
         <Query query={GET_TAGS_QUERY}>
-          {({ queryLoading, error, data }) => {
+          {({ loading: queryLoading, error, data }) => {
             let placeholder;
             if (queryLoading) placeholder = 'Cargando...';
             else if (error) placeholder = 'Error';

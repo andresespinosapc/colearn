@@ -115,8 +115,13 @@ export const GET_LINKNODE_QUERY = gql`
         }
       }
       comments {
+        id
+        createdAt
         body
         likes
+        user {
+          email
+        }
       }
     }
   }

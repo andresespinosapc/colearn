@@ -4,7 +4,7 @@ import { Card, Button, Label, Icon } from 'semantic-ui-react';
 import LinkNodeRating from '../components/LinkNodeRating';
 
 
-const LinkNodeCard = ({ node, onRequirementsClick, onDependeesClick }) => {
+const LinkNodeCard = ({ node, onClick, onRequirementsClick, onDependeesClick }) => {
   return (
     <Card>
       <Card.Content>
@@ -20,19 +20,19 @@ const LinkNodeCard = ({ node, onRequirementsClick, onDependeesClick }) => {
         <Card.Description>
           {node.description}
         </Card.Description>
-        <div style={{ marginTop: 5, marginBottom: 5 }}>
-          <Icon name="comment outline" />
-          {node._commentsMeta.count} comentario{node._commentsMeta.count !== 1 && 's'}
-        </div>
       </Card.Content>
       <Card.Content extra>
-        <div className='ui two buttons'>
+        <div className='ui three tiny buttons'>
           <Button basic color='red' onClick={() => onRequirementsClick(node.id)}>
             Requisitos
-        </Button>
+          </Button>
+          <Button basic color="blue" onClick={() => onClick(node.id)}>
+            <Icon name="comment outline" />
+            {node._commentsMeta.count}
+          </Button>
           <Button basic color='green' onClick={() => onDependeesClick(node.id)}>
             Requisito de
-        </Button>
+          </Button>
         </div>
       </Card.Content>
     </Card>

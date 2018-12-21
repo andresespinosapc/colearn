@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Segment, Card, Container, Loader } from 'semantic-ui-react';
+import { Modal, Segment, Card, Container, Loader } from 'semantic-ui-react';
 import { Query } from 'react-apollo';
-import { GET_LINKNODES_QUERY, GET_LINKNODES_VAR_QUERY } from '../queries';
+import { GET_LINKNODES_QUERY, GET_LINKNODES_VAR_QUERY, GET_LINKNODE_QUERY } from '../queries';
 import LinkNodeCard from '../components/LinkNodeCard';
 import LinkNodeDetails from '../components/LinkNodeDetails';
 import algoliasearch from 'algoliasearch';
@@ -20,7 +20,7 @@ class NodesList extends React.Component {
 
   static defaultProps = {
     LinkNodeComponent: LinkNodeCard,
-    onLinkNodeSelect: () => {},
+    onLinkNodeSelect: null,
     selectedLinkNodes: [],
   }
 
@@ -28,6 +28,7 @@ class NodesList extends React.Component {
     lastQuery: '',
     queryStatus: null,
     queryData: null,
+    selectedLinkNodeId: null,
   };
 
   componentDidUpdate() {
@@ -76,7 +77,7 @@ class NodesList extends React.Component {
   }
 
   renderCardGroup = (nodes) => {
-    const { LinkNodeComponent, selectedLinkNodes, history } = this.props;
+    const { onLinkNodeSelect, LinkNodeComponent, selectedLinkNodes, history } = this.props;
 
     if (nodes.length === 0) {
       return (
@@ -94,19 +95,22 @@ class NodesList extends React.Component {
               key={node.id}
               node={node}
               selected={selectedLinkNodes.findIndex(x => x.id === node.id) !== -1}
-              onClick={() => this.handleClickNode(node.id, node.title)}
+              onClick={onLinkNodeSelect ? (
+                () => this.handleClickNode(node.id, node.title)
+              ) : (
+                () => this.setState({ selectedLinkNodeId: node.id })
+              )}
               onRequirementsClick={parentId => history.push(`/requirements/${parentId}`)}
               onDependeesClick={childId => history.push(`/dependees/${childId}`)}
             />
           ))}
         </Card.Group>
-        <LinkNodeDetails node={nodes[0]} />
       </React.Fragment>
     );
   };
 
   render() {
-    const { queryStatus, queryData } = this.state;
+    const { queryStatus, queryData, selectedLinkNodeId } = this.state;
     const { parentId, childId } = this.props.match.params;
 
     let filter;
@@ -139,6 +143,26 @@ class NodesList extends React.Component {
               {this.linkNodesQueryCallback}
             </Query>
           )
+        )}
+        {selectedLinkNodeId !== null && (
+          <Query
+            query={GET_LINKNODE_QUERY}
+            variables={{ id: selectedLinkNodeId }}
+          >
+            {({ loading, error, data }) => {
+              if (error) console.log(error);
+
+              return (
+                <Modal open onClose={() => this.setState({ selectedLinkNodeId: null })}>
+                  {loading ? (
+                    <Loader />
+                  ) : (
+                    <LinkNodeDetails node={data.LinkNode} loading={loading} />
+                  )}
+                </Modal>
+              );
+            }}
+          </Query>
         )}
       </Container>
     );
