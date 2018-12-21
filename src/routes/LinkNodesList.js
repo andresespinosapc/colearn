@@ -4,6 +4,7 @@ import { Segment, Card, Container, Loader } from 'semantic-ui-react';
 import { Query } from 'react-apollo';
 import { GET_LINKNODES_QUERY, GET_LINKNODES_VAR_QUERY } from '../queries';
 import LinkNodeCard from '../components/LinkNodeCard';
+import LinkNodeDetails from '../components/LinkNodeDetails';
 import algoliasearch from 'algoliasearch';
 
 
@@ -86,18 +87,21 @@ class NodesList extends React.Component {
     }
 
     return (
-      <Card.Group centered>
-        {nodes.map(node => (
-          <LinkNodeComponent
-            key={node.id}
-            node={node}
-            selected={selectedLinkNodes.findIndex(x => x.id === node.id) !== -1}
-            onClick={() => this.handleClickNode(node.id, node.title)}
-            onRequirementsClick={parentId => history.push(`/requirements/${parentId}`)}
-            onDependeesClick={childId => history.push(`/dependees/${childId}`)}
-          />
-        ))}
-      </Card.Group>
+      <React.Fragment>
+        <Card.Group centered>
+          {nodes.map(node => (
+            <LinkNodeComponent
+              key={node.id}
+              node={node}
+              selected={selectedLinkNodes.findIndex(x => x.id === node.id) !== -1}
+              onClick={() => this.handleClickNode(node.id, node.title)}
+              onRequirementsClick={parentId => history.push(`/requirements/${parentId}`)}
+              onDependeesClick={childId => history.push(`/dependees/${childId}`)}
+            />
+          ))}
+        </Card.Group>
+        <LinkNodeDetails node={nodes[0]} />
+      </React.Fragment>
     );
   };
 

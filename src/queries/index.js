@@ -60,6 +60,9 @@ export const GET_LINKNODES_VAR_QUERY = gql`
           id
         }
       }
+      _commentsMeta {
+        count
+      }
     }
   }
 `;
@@ -81,6 +84,39 @@ export const GET_LINKNODES_QUERY = gql`
         user {
           id
         }
+      }
+      _commentsMeta {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_LINKNODE_QUERY = gql`
+  query getLinkNodeQuery(
+    $id: ID!
+  ) {
+    LinkNode(
+      id: $id
+    ) {
+      id
+      title
+      description
+      link
+      tags {
+        id
+        title
+      }
+      ratings {
+        id
+        score
+        user {
+          id
+        }
+      }
+      comments {
+        body
+        likes
       }
     }
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Mutation } from 'react-apollo';
-import { Card, Button, Label, Rating } from 'semantic-ui-react';
+import { Card, Button, Label, Rating, Icon } from 'semantic-ui-react';
 import { CREATE_RATING_MUTATION, UPDATE_RATING_MUTATION } from '../queries';
 import { USER_ID } from '../constants';
 
@@ -71,6 +71,10 @@ const LinkNodeCard = ({ node, onRequirementsClick, onDependeesClick }) => {
         <Card.Description>
           {node.description}
         </Card.Description>
+        <div style={{ marginTop: 5, marginBottom: 5 }}>
+          <Icon name="comment outline" />
+          {node._commentsMeta.count} comentario{node._commentsMeta.count !== 1 && 's'}
+        </div>
       </Card.Content>
       <Card.Content extra>
         <div className='ui two buttons'>
