@@ -5,7 +5,7 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 import CreateLinkNode from './routes/CreateLinkNode';
 import NodesList from './routes/LinkNodesList';
 import Login from './routes/Login';
-import { AUTH_TOKEN } from './constants';
+import { AUTH_TOKEN, USER_EMAIL } from './constants';
 
 
 class App extends Component {
@@ -21,6 +21,7 @@ class App extends Component {
 
   render() {
     const authToken = localStorage.getItem(AUTH_TOKEN);
+    const userEmail = localStorage.getItem(USER_EMAIL);
 
     let { searchText } = this.state;
     const { history } = this.props;
@@ -88,14 +89,17 @@ class App extends Component {
               </Form>
             </Menu.Item>
             {authToken ? (
-              <Menu.Item
-                name='logout'
-                active={false}
-                onClick={() => {
-                  localStorage.removeItem(AUTH_TOKEN);
-                  history.push('/');
-                }}
-              />
+              <React.Fragment>
+                <Menu.Item name={userEmail} />
+                <Menu.Item
+                  name='logout'
+                  active={false}
+                  onClick={() => {
+                    localStorage.removeItem(AUTH_TOKEN);
+                    history.push('/');
+                  }}
+                />
+              </React.Fragment>
             ) : (
               <Menu.Item
                 name='login'
