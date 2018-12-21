@@ -13,6 +13,9 @@ export const LOGIN_MUTATION = gql`
       }
     ) {
       token
+      user {
+        id
+      }
     }
   }
 `;
@@ -51,7 +54,11 @@ export const GET_LINKNODES_VAR_QUERY = gql`
         title
       }
       ratings {
+        id
         score
+        user {
+          id
+        }
       }
     }
   }
@@ -69,7 +76,11 @@ export const GET_LINKNODES_QUERY = gql`
         title
       }
       ratings {
+        id
         score
+        user {
+          id
+        }
       }
     }
   }
@@ -114,6 +125,36 @@ export const CREATE_LINKNODE_MUTATION = gql`
       ratings {
         score
       }
+    }
+  }
+`;
+
+export const CREATE_RATING_MUTATION = gql`
+  mutation createRatingMutation(
+    $nodeId: ID!
+    $userId: ID!
+    $score: Int!
+  ) {
+    createRating(
+      nodeId: $nodeId
+      userId: $userId
+      score: $score
+    ) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_RATING_MUTATION = gql`
+  mutation updateRatingMutation(
+    $id: ID!
+    $score: Int!
+  ) {
+    updateRating(
+      id: $id
+      score: $score
+    ) {
+      id
     }
   }
 `;

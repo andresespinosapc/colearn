@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Button, Message } from 'semantic-ui-react';
-import { AUTH_TOKEN } from '../constants';
+import { AUTH_TOKEN, USER_ID } from '../constants';
 import { LOGIN_MUTATION, SIGNUP_MUTATION } from '../queries';
 import { Mutation } from 'react-apollo';
 
@@ -61,13 +61,14 @@ class Login extends Component {
   _confirm = async data => {
     const { login } = this.state;
 
-    const { token } = login ? data.signinUser : data.createUser;
-    this._saveUserData(token);
+    const { token, user: { id } } = login ? data.signinUser : data.createUser;
+    this._saveUserData(token, id);
     this.props.history.push(`/`);
   }
 
-  _saveUserData = token => {
+  _saveUserData = (token, userId) => {
     localStorage.setItem(AUTH_TOKEN, token);
+    localStorage.setItem(USER_ID, userId);
   }
 }
 
