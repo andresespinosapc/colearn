@@ -199,3 +199,19 @@ export const UPDATE_RATING_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_COMMENT_MUTATION = gql`
+  mutation createCommentMutation(
+    $linkNodeId: ID!
+    $userId: ID!
+    $body: String!
+  ) {
+    createComment(
+      linkNodeId: $linkNodeId
+      userId: $userId
+      body: $body
+    ) {
+      id
+    }
+  }
+`;
