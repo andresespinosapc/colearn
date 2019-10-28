@@ -4,6 +4,8 @@ import { Container, Menu, Form } from 'semantic-ui-react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import CreateLinkNode from './routes/CreateLinkNode';
 import NodesList from './routes/LinkNodesList';
+import CurriculaList from './routes/CurriculaList';
+import Curriculum from './routes/Curriculum';
 import Login from './routes/Login';
 import { AUTH_TOKEN, USER_EMAIL } from './constants';
 
@@ -36,9 +38,13 @@ class App extends Component {
             </div>
           </Menu.Item>
           <Menu.Item
-            name='home'
+            name='Inicio'
             active={pathname === '/'}
             onClick={() => history.push('/')} />
+          <Menu.Item
+            name='Curricula'
+            active={pathname === '/curricula'}
+            onClick={() => history.push('/curricula')} />
           <Menu.Item
             name='Crear CoLink'
             active={pathname === '/nodes/create'}
@@ -115,6 +121,8 @@ class App extends Component {
             <Route exact path="/" component={NodesList} />
             <Route exact path="/login" component={Login} />
             <Route path="/search/:query" component={NodesList} />
+            <Route path="/curricula" component={CurriculaList} />
+            <Route path="/curriculum/:curriculumId" component={Curriculum} />
             <Route path="/requirements/:parentId" component={NodesList} />
             <Route path="/dependees/:childId" component={NodesList} />
             <Route path="/nodes/create" component={CreateLinkNode} />

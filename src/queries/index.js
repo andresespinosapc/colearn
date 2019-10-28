@@ -68,6 +68,36 @@ export const GET_LINKNODES_VAR_QUERY = gql`
   }
 `;
 
+export const GET_CURRICULA_QUERY = gql`
+  {
+    allCurricula {
+      id
+      title
+      description
+    }
+  }
+`;
+
+export const GET_CURRICULUM_QUERY = gql`
+  query getCurriculumQuery(
+    $id: ID!
+  ) {
+    Curriculum(
+      id: $id
+    ) {
+      id
+      title
+      description
+      linkNodes {
+        id
+        title
+        description
+        link
+      }
+    }
+  }
+`;
+
 export const GET_LINKNODES_QUERY = gql`
   {
     allLinkNodes {
